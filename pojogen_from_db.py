@@ -17,7 +17,7 @@ def main():
 	parser.add_argument('--mysql-charset', default='utf8', type=str, help='mysql connection charset. default utf8')
 	parser.add_argument('--db-name', type=str, help='db name to generate pojo class')
 	parser.add_argument('--table-names', nargs='+', default=None, type=str, help='specific table names to generate pojo class. default all tables')
-	parser.add_argument('--output-dir', type=str, help='directory to output')
+	parser.add_argument('--output-dir', type=str, help='directory to output. if no, it will print to console')
 	parser.add_argument('--package-name', type=str, help='package name for pojo class')
 
 	args = parser.parse_args()
@@ -45,7 +45,7 @@ def main():
 				with codecs.open(file_path, "w", 'utf-8') as f:
 					f.write(code)
 
-				print ("Generate file : " + file_path)
+				print ("{} -> {}".format(table.table_name, file_path))
 			else:
 				print (code)
 
