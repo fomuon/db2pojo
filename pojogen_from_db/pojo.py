@@ -99,7 +99,15 @@ class PojoPropertyConverter(metaclass=abc.ABCMeta):
 		pass
 
 	def _convert_name(self, column):
-		return underscore_to_camelcase(column.column_name)
+		name = column.column_name
+
+		if ('_' in name):
+			return underscore_to_camelcase(name)
+		elif name == name.upper():
+			return name.lower()
+		else:
+			return name[0].lower() + name[1:] if len(name) >= 2 else name.lower()
+
 
 	def _convert_type(self, column):
 		type = self._convert_type_internal(column)
