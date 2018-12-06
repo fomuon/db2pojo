@@ -28,7 +28,12 @@ def main():
 	else:
 		tables = get_tables_from_mysql(args.mysql_host, args.mysql_port, args.db_name, args.mysql_user, args.mysql_password, args.mysql_charset)
 
+		specific_tables = set(args.table_names) if args.table_names else None
+
 		for table in tables:
+			if specific_tables and table.table_name not in specific_tables:
+				continue
+
 			pojo = convert_pojo(table)
 			pojo.package_name = args.package_name
 
