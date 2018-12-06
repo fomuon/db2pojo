@@ -5,7 +5,12 @@ from pojogen_from_db.util import *
 def convert_pojo(table):
 	property_converter = PojoPropertyConverter.create()
 
-	class_name = underscore_to_pascalcase(table.table_name)
+	class_name = table.table_name
+
+	if '_' in class_name:
+		class_name = underscore_to_pascalcase(class_name)
+	elif class_name == class_name.upper() and len(class_name) > 1:
+		class_name = class_name[0] + class_name[1:].lower()
 
 	props = []
 
