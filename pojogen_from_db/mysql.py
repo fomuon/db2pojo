@@ -1,3 +1,5 @@
+import re
+
 import pymysql
 
 from pojogen_from_db.model import Table, Column
@@ -10,7 +12,8 @@ def get_tables_from_mysql(host, port, db_name, user, password, charset):
 
 		for table_name in __get_table_names(connection, db_name):
 			columns = __get_columns(connection, db_name, table_name)
-			tables.append(Table(table_name, columns))
+			script = __get_create_table_script(connection, db_name, table_name)
+			tables.append(Table(table_name, columns, script))
 
 		return tables
 
@@ -47,3 +50,19 @@ def __get_columns(conn, db_name, table_name):
 			columns.append(column)
 
 	return columns
+
+def __get_create_table_script(conn, db_name, table_name):
+	with conn.cursor() as cur:
+		sql = 'show create table %s.%s' % (db_name, table_name)
+
+		cur.execute(sql)
+		result = cur.fetchone()
+
+	return __filter_auto_increment_value(result[1])
+
+def __filter_auto_increment_value(script):
+	(front_script, last_line) = script.rsplit('\n', 1)
+	last_line = re.sub("\sAUTO_INCREMENT=\d+", '', last_line, count=1)
+
+	return front_script + '\n' + last_line
+

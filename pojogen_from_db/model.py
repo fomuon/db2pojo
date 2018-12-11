@@ -1,10 +1,12 @@
 class Table(object):
 	table_name: str
 	columns: list
+	script: str
 
-	def __init__(self, table_name, columns):
+	def __init__(self, table_name, columns, script):
 		self.table_name = table_name
 		self.columns = columns
+		self.script = script
 
 
 class Column(object):

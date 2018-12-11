@@ -17,8 +17,9 @@ def main():
 	parser.add_argument('--mysql-charset', default='utf8', type=str, help='mysql connection charset. default utf8')
 	parser.add_argument('--db-name', type=str, help='db name to generate pojo class')
 	parser.add_argument('--table-names', nargs='+', default=None, type=str, help='specific table names to generate pojo class. default all tables')
-	parser.add_argument('--output-dir', type=str, help='directory to output. if no, it will print to console')
-	parser.add_argument('--package-name', type=str, help='package name for pojo class')
+
+	parser.add_argument('--pojo', type=str, nargs=2, metavar=('OUTPUT_DIR', 'PACKAGE_NAME'), help='pojo generation options')
+	parser.add_argument('--ddl', type=str, metavar='OUTPUT_DIR', help='ddl for create table generation option')
 
 	args = parser.parse_args()
 
@@ -30,26 +31,42 @@ def main():
 
 		specific_tables = set(args.table_names) if args.table_names else None
 
-		for table in tables:
-			if specific_tables and table.table_name not in specific_tables:
-				continue
+		if specific_tables:
+			filtered_tables = [table for table in tables if table.table_name in specific_tables]
+		else:
+			filtered_tables = tables
 
-			pojo = convert_pojo(table)
-			pojo.package_name = args.package_name
+		if args.pojo:
+			generate_pojo(filtered_tables, args.pojo[0], args.pojo[1])
 
-			code = pojo.generate_code()
-
-			if args.output_dir:
-				file_path = os.path.join(args.output_dir, pojo.class_name + '.java')
-
-				with codecs.open(file_path, "w", 'utf-8') as f:
-					f.write(code)
-
-				print ("{} -> {}".format(table.table_name, file_path))
-			else:
-				print (code)
+		if args.ddl:
+			generate_ddl(filtered_tables, args.ddl)
 
 	pass
+
+def generate_pojo(tables, output_dir, package_name):
+	for table in tables:
+		pojo = convert_pojo(table)
+		pojo.package_name = package_name
+
+		code = pojo.generate_code()
+
+		file_path = os.path.join(output_dir, pojo.class_name + '.java')
+
+		with codecs.open(file_path, "w", 'utf-8') as f:
+			f.write(code)
+
+		print ("{} -> {}".format(table.table_name, file_path))
+
+def generate_ddl(tables, output_dir):
+	for table in tables:
+
+		file_path = os.path.join(output_dir, table.table_name + '.sql')
+
+		with codecs.open(file_path, "w", 'utf-8') as f:
+			f.write(table.script)
+
+		print ("{} -> {}".format(table.table_name, file_path))
 
 
 if __name__ == "__main__":
