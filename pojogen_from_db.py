@@ -23,24 +23,20 @@ def main():
 
 	args = parser.parse_args()
 
-	if not args.mysql_host or not args.mysql_user or not args.mysql_password or not args.db_name:
-		print ('It runs interactive mode.')
-		#TODO implements
+	tables = get_tables_from_mysql(args.mysql_host, args.mysql_port, args.db_name, args.mysql_user, args.mysql_password, args.mysql_charset)
+
+	specific_tables = set(args.table_names) if args.table_names else None
+
+	if specific_tables:
+		filtered_tables = [table for table in tables if table.table_name in specific_tables]
 	else:
-		tables = get_tables_from_mysql(args.mysql_host, args.mysql_port, args.db_name, args.mysql_user, args.mysql_password, args.mysql_charset)
+		filtered_tables = tables
 
-		specific_tables = set(args.table_names) if args.table_names else None
+	if args.pojo:
+		generate_pojo(filtered_tables, args.pojo[0], args.pojo[1])
 
-		if specific_tables:
-			filtered_tables = [table for table in tables if table.table_name in specific_tables]
-		else:
-			filtered_tables = tables
-
-		if args.pojo:
-			generate_pojo(filtered_tables, args.pojo[0], args.pojo[1])
-
-		if args.ddl:
-			generate_ddl(filtered_tables, args.ddl)
+	if args.ddl:
+		generate_ddl(filtered_tables, args.ddl)
 
 	pass
 
