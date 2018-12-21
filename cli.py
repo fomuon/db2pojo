@@ -4,8 +4,8 @@ import argparse
 import codecs
 import os
 
-from pojogen_from_db.mysql import get_tables_from_mysql
-from pojogen_from_db.pojo import convert_pojo
+from db2pojo.mysql import get_tables_from_mysql
+from db2pojo.pojo import convert_pojo
 
 def main():
 	parser = argparse.ArgumentParser(description='Generates pojo class file from an existing mysql database.\n If it runs without the required options, it run interactive mode.')

@@ -2,7 +2,7 @@ import re
 
 import pymysql
 
-from pojogen_from_db.model import Table, Column
+from db2pojo.model import Table, Column
 
 def get_tables_from_mysql(host, port, db_name, user, password, charset):
 	connection = pymysql.connect(host=host, port=port, user=user, password=password, charset=charset)

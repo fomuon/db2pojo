@@ -1,5 +1,6 @@
 import abc
-from pojogen_from_db.util import *
+
+from db2pojo.util import underscore_to_pascalcase, underscore_to_camelcase
 
 
 def convert_pojo(table):

@@ -1,6 +1,6 @@
 import unittest
-from pojogen_from_db.pojo import PojoPropertyConverter
-from pojogen_from_db.model import Column
+from db2pojo.pojo import PojoPropertyConverter
+from db2pojo.model import Column
 
 
 class MyTestCase(unittest.TestCase):
