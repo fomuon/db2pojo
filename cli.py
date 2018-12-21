@@ -20,6 +20,7 @@ def main():
 
 	parser.add_argument('--pojo', type=str, nargs=2, metavar=('OUTPUT_DIR', 'PACKAGE_NAME'), help='pojo generation options')
 	parser.add_argument('--ddl', type=str, metavar='OUTPUT_DIR', help='ddl for create table generation option')
+	parser.add_argument('--dry', action="store_true", help='it will not create files will only print to console.')
 
 	args = parser.parse_args()
 
@@ -33,36 +34,46 @@ def main():
 		filtered_tables = tables
 
 	if args.pojo:
-		generate_pojo(filtered_tables, args.pojo[0], args.pojo[1])
+		generate_pojo(filtered_tables, args.pojo[0], args.pojo[1], args.dry)
 
 	if args.ddl:
-		generate_ddl(filtered_tables, args.ddl)
+		generate_ddl(filtered_tables, args.ddl, args.dry)
 
 	pass
 
-def generate_pojo(tables, output_dir, package_name):
+def generate_pojo(tables, output_dir, package_name, dry_run):
 	for table in tables:
 		pojo = convert_pojo(table)
 		pojo.package_name = package_name
 
 		code = pojo.generate_code()
 
-		file_path = os.path.join(output_dir, pojo.class_name + '.java')
+		if dry_run:
+			print ("({} -> {})".format(table.table_name, pojo.class_name + '.java'))
+			print(code)
+		else:
+			file_path = os.path.join(output_dir, pojo.class_name + '.java')
 
-		with codecs.open(file_path, "w", 'utf-8') as f:
-			f.write(code)
+			with codecs.open(file_path, "w", 'utf-8') as f:
+				f.write(code)
 
-		print ("{} -> {}".format(table.table_name, file_path))
+			print ("{} -> {}".format(table.table_name, file_path))
 
-def generate_ddl(tables, output_dir):
+
+def generate_ddl(tables, output_dir, dry_run):
 	for table in tables:
 
-		file_path = os.path.join(output_dir, table.table_name + '.sql')
+		if dry_run:
+			print ("({} Script)".format(table.table_name))
+			print(table.script)
+		else:
 
-		with codecs.open(file_path, "w", 'utf-8') as f:
-			f.write(table.script)
+			file_path = os.path.join(output_dir, table.table_name + '.sql')
 
-		print ("{} -> {}".format(table.table_name, file_path))
+			with codecs.open(file_path, "w", 'utf-8') as f:
+				f.write(table.script)
+
+			print ("{} -> {}".format(table.table_name, file_path))
 
 
 if __name__ == "__main__":
