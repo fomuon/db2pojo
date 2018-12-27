@@ -11,19 +11,19 @@ from db2pojo.pojo import convert_pojo
 def main():
 	parser = argparse.ArgumentParser(description='Generates pojo class file from an existing mysql database.\n If it runs without the required options, it run interactive mode.')
 
-	parser.add_argument('--mysql-host', type=str, help='mysql host name')
+	parser.add_argument('--mysql-host', type=str, required=True, help='mysql host name')
 	parser.add_argument('--mysql-port', default=3306, type=int, help='mysql port. default 3306')
-	parser.add_argument('--mysql-user', type=str, help='mysql user name')
-	parser.add_argument('--mysql-password', type=str, help='mysql password')
+	parser.add_argument('--mysql-user', type=str, required=True, help='mysql user name')
+	parser.add_argument('--mysql-password', type=str, required=True, help='mysql password')
 	parser.add_argument('--mysql-charset', default='utf8', type=str, help='mysql connection charset. default utf8')
-	parser.add_argument('--db-name', type=str, help='db name to generate pojo class')
+	parser.add_argument('--db-name', type=str, required=True, help='db name to generate pojo class')
 	parser.add_argument('--table-names', nargs='+', default=None, type=str, help='specific table names to generate pojo class. default all tables')
 
 	parser.add_argument('--pojo', type=str, nargs=2, metavar=('OUTPUT_DIR', 'PACKAGE_NAME'), help='pojo generation options')
 	parser.add_argument('--ddl', type=str, metavar='OUTPUT_DIR', help='ddl for create table generation option')
 	parser.add_argument('--dry', action="store_true", help='it will not create files will only print to console.')
 
-	parser.add_argument('--version', default=False, action='store_true', help='Print the current version')
+	parser.add_argument('-v', '--version', default=False, action='store_true', help='Print the current version')
 
 	args = parser.parse_args()
 
