@@ -23,13 +23,9 @@ def main():
 	parser.add_argument('--ddl', type=str, metavar='OUTPUT_DIR', help='ddl for create table generation option')
 	parser.add_argument('--dry', action="store_true", help='it will not create files will only print to console.')
 
-	parser.add_argument('-v', '--version', default=False, action='store_true', help='Print the current version')
+	parser.add_argument('-v', '--version', default=False, action='version', version='db2pojo version ({})'.format(__version__),  help='Print the current version')
 
 	args = parser.parse_args()
-
-	if args.version:
-		print('excel-export version {}'.format(__version__))
-		exit(0)
 
 	tables = get_tables_from_mysql(args.mysql_host, args.mysql_port, args.db_name, args.mysql_user, args.mysql_password, args.mysql_charset)
 
