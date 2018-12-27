@@ -52,8 +52,10 @@ def generate_pojo(tables, output_dir, package_name, dry_run):
 		code = pojo.generate_code()
 
 		if dry_run:
-			print ("({} -> {})".format(table.table_name, pojo.class_name + '.java'))
-			print(code)
+			title = "==== Generate ({} -> {}) ====".format(table.table_name, pojo.class_name + '.java')
+			print(title)
+			print (code)
+			print('-' * len(title), "\n\n")
 		else:
 			file_path = os.path.join(output_dir, pojo.class_name + '.java')
 
@@ -67,8 +69,10 @@ def generate_ddl(tables, output_dir, dry_run):
 	for table in tables:
 
 		if dry_run:
-			print ("({} Script)".format(table.table_name))
+			title = "==== Generate ({} Script) ====".format(table.table_name)
+			print (title)
 			print(table.script)
+			print ('-' * len(title), "\n\n")
 		else:
 
 			file_path = os.path.join(output_dir, table.table_name + '.sql')
